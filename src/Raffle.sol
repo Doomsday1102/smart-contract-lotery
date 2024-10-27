@@ -34,7 +34,7 @@ import {VRFV2PlusClient} from "@chainlink/contracts/src/v0.8/vrf/dev/libraries/V
 
 contract Raffle is VRFConsumerBaseV2Plus {
     /**     Errors */
-    error Raffle__SendMoreEnterRaffle();
+    error Raffle__SendMoreToEnterRaffle();
     error Raffle_TransferFailed();
     error Raffle__RaffleNotOpen();
     error Raffle__UpkeepNotNeeded(
@@ -91,7 +91,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
         //require(msg.value>=i_entranceFee,"Not enough ETH sent!"); not eficiente
         //require(msg.value>=i_entranceFee,SendMoreEnterRAffle()); just in some versions and not efiencient enough
         if (msg.value < i_entranceFee) {
-            revert Raffle__SendMoreEnterRaffle();
+            revert Raffle__SendMoreToEnterRaffle();
         }
         if (s_raffleState != RaffleState.OPEN) {
             revert Raffle__RaffleNotOpen();
@@ -182,7 +182,15 @@ contract Raffle is VRFConsumerBaseV2Plus {
     }
 
     /** Getter Functions */
-    function getEntranceFee() public view returns (uint256) {
+    function getEntranceFee() external view returns (uint256) {
         return i_entranceFee;
+    }
+
+    function getRaflleState() external view returns (RaffleState) {
+        return s_raffleState;
+    }
+
+    function getPlayer(uint256 indexOfPlayer) external view returns (address) {
+        return s_players[indexOfPlayer];
     }
 }
